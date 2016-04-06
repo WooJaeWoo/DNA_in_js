@@ -1,3 +1,3 @@
-# DNA_in_js
+# DNA_with_js
 
 Data Structures & Algorithms with JavaScript
