@@ -1,6 +1,7 @@
 function Node(element) {
     this.element = element;
     this.next = null;
+    this.prev = null;
 }
 
 function find(item) {
@@ -14,13 +15,10 @@ function find(item) {
     return currentNode;
 }
 
-function findPrev(item) {
+function findLast() {
     var currentNode = this.head;
-    while (currentNode.next && currentNode.next.element !== item) {
+    while (currentNode.next) {
         currentNode = currentNode.next;
-    }
-    if (!currentNode.next) {
-        return null;
     }
     return currentNode;
 }
@@ -29,6 +27,7 @@ function insert(newElement, item) {
     var newNode = new Node(newElement);
     var current = this.find(item);
     if (current) {
+        newNode.prev = current;
         newNode.next = current.next;
         current.next = newNode;
     } else {
@@ -38,9 +37,14 @@ function insert(newElement, item) {
 }
 
 function remove(item) {
-    var prev = this.findPrev(item);
-    if (prev) {
-        prev.next = prev.next.next;
+    var target = this.find(item);
+    if (target) {
+        if (target.next) {
+            target.next.prev = target.prev;
+        }
+        target.prev.next = target.next;
+        target.next = null;
+        target.prev = null;
     } else {
         console.log("[ERR] Remove Fail - No Item(" + item + ")");
         return;
@@ -60,21 +64,34 @@ function display() {
     }
 }
 
-function LList() {
+function displayReverse() {
+    var currentNode = this.findLast();
+    if (!currentNode.prev) {
+        console.log("[ERR] Display Fail - No Node");
+        return;
+    }
+    
+    while (currentNode.prev) {
+        console.log(currentNode.element);
+        currentNode = currentNode.prev;
+    }
+}
+
+function DLList() {
     this.head = new Node("head");
     this.find = find;
-    this.findPrev = findPrev;
+    this.findLast = findLast;
     this.insert = insert;
     this.display = display;
+    this.displayReverse = displayReverse;
     this.remove = remove;
 }
 
-var ll = new LList();
-ll.insert("a", "head");
-ll.insert("b", "a");
-ll.insert("c", "b");
-ll.insert("d", "c");
-ll.display();
-ll.remove("a");
-ll.remove("d");
-ll.display();
+var dll = new DLList();
+dll.insert("a", "head");
+dll.insert("b", "a");
+dll.insert("c", "b");
+dll.insert("d", "c");
+dll.remove("b");
+dll.display();
+dll.displayReverse();
